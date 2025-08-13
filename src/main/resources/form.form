@@ -1,0 +1,68 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.7.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "8429cc4"
+  },
+  "schemaVersion": 18,
+  "id": "Form_1jikqzk",
+  "components": [
+    {
+      "text": "{{accidentLocation}}",
+      "type": "text",
+      "layout": {
+        "row": "Row_0i0ipkj",
+        "columns": null
+      },
+      "id": "Field_0rhb68p"
+    },
+    {
+      "type": "image",
+      "layout": {
+        "row": "Row_0101e3t",
+        "columns": null
+      },
+      "id": "Field_0748641",
+      "source": "=imageVariable"
+    },
+    {
+      "height": 10,
+      "type": "spacer",
+      "layout": {
+        "row": "Row_1iflui7",
+        "columns": null
+      },
+      "id": "Field_12ogqvw"
+    },
+    {
+      "label": "isValid",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_15ckh49",
+        "columns": null
+      },
+      "id": "Field_1tmirjs",
+      "key": "isValid",
+      "properties": { }
+    },
+    {
+      "label": "problem description",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0ouv67i",
+        "columns": null
+      },
+      "id": "Field_094iiws",
+      "key": "problemDesc",
+      "validate": {
+        "required": false
+      },
+      "conditional": {
+        "hide": "=checkbox_hcvdk = true"
+      },
+      "disabled": false
+    }
+  ],
+  "type": "default"
+}
