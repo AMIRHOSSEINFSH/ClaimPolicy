@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.ClaimDto;
 import com.example.demo.entity.ClaimEntity;
 import com.example.demo.repository.PolicyRepository;
+import io.camunda.zeebe.client.api.JsonMapper;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
@@ -25,10 +26,14 @@ public class ClaimCheckService {
     @Autowired
     private PolicyRepository policyRepository;
 
+    @Autowired
+    private JsonMapper jsonMapper;
+
     @JobWorker(type = "validatePolicy",streamEnabled = true)
     public void checkPolicy(final JobClient client, final ActivatedJob job) {
         log.info("Checking policy");
-        ClaimDto claimDto = job.getVariablesAsType(ClaimDto.class);
+        String claimJson=  jsonMapper.toJson(job.getVariable("claimDto"));
+        ClaimDto claimDto = jsonMapper.fromJson(claimJson,ClaimDto.class);
 
         ClaimEntity claim = claimService.fillEntity(claimDto);
 

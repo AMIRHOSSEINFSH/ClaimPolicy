@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,8 +31,10 @@ public class ClaimService extends BaseService {
     private ClaimRepository claimRepository;
 
     public ProcessResult doClaim(ClaimDto claimDto) {
+        Map<String, Object> processVariables = new HashMap<>(getProcessPrefixMap(Process_claim_policy));
+        processVariables.put("claimDto",claimDto);
         ProcessResult processResult = process(Process_claim_policy.name(),
-                claimDto,
+                processVariables,
                 (variableMap)-> variableMap.getOrDefault("Result",null));
         return processResult;
     }

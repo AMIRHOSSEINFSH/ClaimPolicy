@@ -4,6 +4,7 @@ import com.example.demo.common.FlowNodeInstance;
 import com.example.demo.common.FlowNodeResponse;
 import com.example.demo.common.OperateApiService;
 import com.example.demo.common.ProcessResult;
+import com.example.demo.common.enums.Const;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
@@ -31,15 +32,12 @@ public abstract class BaseService {
     private JobWorkerManager jobWorkerManager;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private OperateApiService operateApiService;
 
     @Value("${camunda.client.zeebe.request-timeout}")
     private Duration requestTimeOut;
 
-    protected ProcessResult process(String processId, Object variable, Function<Map<String,Object>, Object> callback) {
+    protected ProcessResult process(String processId, Map<String,Object> variables, Function<Map<String,Object>, Object> callback) {
         ProcessResult processResult = new ProcessResult();
         processResult.setProcessInstanceName(processId);
         ProcessInstanceEvent result;
@@ -47,7 +45,7 @@ public abstract class BaseService {
             result = zeebeClient.newCreateInstanceCommand()
                     .bpmnProcessId(processId)
                     .latestVersion()
-                    .variables(variable)
+                    .variables(variables)
                     .send().join();
             processResult.setProcessInstanceId(result.getProcessInstanceKey());
             Mono.create(sink-> {
@@ -104,5 +102,9 @@ public abstract class BaseService {
 
 
         return processResult;
+    }
+
+    protected Map<String,Object> getProcessPrefixMap(Const.PROCESS process) {
+        return Map.of("processPrefix", process.getProcessPrefix());
     }
 }

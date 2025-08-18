@@ -1,6 +1,9 @@
 package com.example.demo.dto;
 
 import com.example.demo.common.enums.DamageType;
+import com.example.demo.entity.PolicyEntity;
+import com.example.demo.entity.VehicleEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,6 +16,12 @@ public class ClaimDto {
     private DamageType damageType;
     private String damageDescription;
     private UUID vehicleId;
+
+    @JsonIgnore
+    private VehicleEntity vehicle;
+
+    @JsonIgnore
+    private PolicyEntity policy;
 
     public UUID getPolicyId() {
         return policyId;
