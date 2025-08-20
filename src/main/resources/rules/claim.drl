@@ -1,0 +1,39 @@
+package rules;
+
+import com.example.demo.dto.ClaimDto;
+import java.time.LocalDate;
+
+rule "Discount for Nowruz (Persian New Year)"
+when
+    $claim : ClaimDto(
+        claimDate != null,
+        claimDate.getMonthValue() == 1,
+        claimDate.getDayOfMonth() >= 1 && claimDate.getDayOfMonth() <= 13
+    )
+then
+    $claim.setDisCount($claim.getDisCount() + 10);
+System.out.println("Nowruz discount applied");
+end
+
+rule "Discount for Summer Month"
+when
+    $claim : ClaimDto(
+        claimDate != null,
+        (claimDate.getMonthValue() == 6 || claimDate.getMonthValue() == 7 || claimDate.getMonthValue() == 8)
+    )
+then
+    $claim.setDisCount($claim.getDisCount() + 5); // تخفیف 5 درصدی در تابستان
+    System.out.println("Summer discount applied");
+end
+
+rule "Discount for National Day"
+when
+    $claim : ClaimDto(
+        claimDate != null,
+        claimDate.getMonthValue() == 10,
+        claimDate.getDayOfMonth() == 4
+    )
+then
+    $claim.setDisCount($claim.getDisCount() + 7); // تخفیف 7 درصدی برای روز ملی
+    System.out.println("National Day discount applied");
+end

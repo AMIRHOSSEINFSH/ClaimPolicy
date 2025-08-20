@@ -1,0 +1,51 @@
+package com.example.demo.common.drools.dto;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ValidationResult {
+    private boolean valid;
+    private List<ValidationError> errors;
+    private List<ValidationWarning> warnings;
+    private Map<String, Object> metadata;
+
+    public ValidationResult() {
+        errors = new ArrayList<ValidationError>();
+        warnings = new ArrayList<>();
+        metadata = new HashMap<String, Object>();
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public List<ValidationError> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<ValidationError> errors) {
+        this.errors = errors;
+    }
+
+    public List<ValidationWarning> getWarnings() {
+        return warnings;
+    }
+
+    public void setWarnings(List<ValidationWarning> warnings) {
+        this.warnings = warnings;
+    }
+
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
+    }
+}
