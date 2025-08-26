@@ -40,10 +40,6 @@ public class ExecutionPlan {
     @Column(name = "is_active")
     private boolean active = true;
     
-    @Column(name = "metadata", columnDefinition = "json")
-    @Convert(converter = JsonbConverter.class)
-    private Map<String, Object> metadata = new HashMap<>();
-    
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -66,14 +62,13 @@ public class ExecutionPlan {
     public ExecutionPlan() {
     }
 
-    public ExecutionPlan(UUID id, String planName, String description, PlanType planType, List<ExecutionPhase> phases, boolean active, Map<String, Object> metadata, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ExecutionPlan(UUID id, String planName, String description, PlanType planType, List<ExecutionPhase> phases, boolean active, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.planName = planName;
         this.description = description;
         this.planType = planType;
         this.phases = phases;
         this.active = active;
-        this.metadata = metadata;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -124,14 +119,6 @@ public class ExecutionPlan {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public LocalDateTime getCreatedAt() {

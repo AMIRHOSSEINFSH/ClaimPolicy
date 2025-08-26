@@ -25,10 +25,10 @@ public interface RuleMapper {
     BusinessRuleDto toDto(BusinessRule entity);
     
     @Named("categoriesToCodes")
-    default Set<String> categoriesToCodes(Set<RuleCategory> categories) {
+    default Set<String> categoriesToCodes(Set<String> categories) {
         if (categories == null) return null;
         return categories.stream()
-            .map(RuleCategory::getCategoryCode)
+//            .map(RuleCategory::getCategoryCode)
             .collect(Collectors.toSet());
     }
     

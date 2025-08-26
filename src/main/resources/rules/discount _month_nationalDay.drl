@@ -1,0 +1,17 @@
+package rules;
+
+import com.example.demo.dto.ClaimDto;
+import java.time.LocalDate;
+
+rule "Discount for National Day"
+@Category(DIS_COUNT)
+agenda-group "DIS_COUNT"
+when
+    $claim : ClaimDto(
+        accidentDate != null,
+        accidentDate.getMonthValue() == 10,
+        accidentDate.getDayOfMonth() == 4
+    )
+then
+    System.out.println("National Day discount applied");
+end

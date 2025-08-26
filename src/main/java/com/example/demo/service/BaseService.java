@@ -5,8 +5,11 @@ import com.example.demo.common.FlowNodeResponse;
 import com.example.demo.common.OperateApiService;
 import com.example.demo.common.ProcessResult;
 import com.example.demo.common.enums.Const;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.JsonMapper;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.worker.JobWorker;
 import io.camunda.zeebe.spring.client.annotation.value.ZeebeWorkerValue;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +40,9 @@ public abstract class BaseService {
 
     @Value("${camunda.client.zeebe.request-timeout}")
     private Duration requestTimeOut;
+
+    @Autowired
+    private JsonMapper jsonMapper;
 
     protected ProcessResult process(String processId, Map<String,Object> variables, Function<Map<String,Object>, Object> callback) {
         ProcessResult processResult = new ProcessResult();
@@ -105,6 +112,16 @@ public abstract class BaseService {
     }
 
     protected Map<String,Object> getProcessPrefixMap(Const.PROCESS process) {
-        return Map.of("processPrefix", process.getProcessPrefix());
+        return Map.of("processSuffix", process.getProcessPrefix());
     }
+
+    protected <T> T getProcessVariableAs(final ActivatedJob job, String variableName, Class<T> clazz) {
+        String claimJson=  jsonMapper.toJson(job.getVariable(variableName));
+        if (clazz == String.class) {
+            return (T) claimJson;
+        }
+        T obj = jsonMapper.fromJson(claimJson,clazz);
+        return obj;
+    }
+
 }

@@ -21,9 +21,7 @@ public class CreateExecutionPlanRequest {
     @NotEmpty(message = "At least one phase is required")
     @Valid
     private List<CreatePhaseRequest> phases;
-    
-    private Map<String, Object> metadata = new HashMap<>();
-    
+
     private boolean active = true;
 
     public @NotBlank(message = "Plan name is required") String getPlanName() {
@@ -56,14 +54,6 @@ public class CreateExecutionPlanRequest {
 
     public void setPhases(@NotEmpty(message = "At least one phase is required") @Valid List<CreatePhaseRequest> phases) {
         this.phases = phases;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public boolean isActive() {

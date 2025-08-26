@@ -11,13 +11,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.*;
 
-// ==================== Business Rule Controller ====================
 
 @RestController
 @RequestMapping("/api/v1/rules")
@@ -71,9 +74,22 @@ public class BusinessRuleController {
     @Operation(summary = "Create new rule", description = "Create a new business rule with categories")
     @ApiResponse(responseCode = "201", description = "Rule created successfully")
     public ResponseEntity<BusinessRuleDto> createRule(@Valid @RequestBody CreateRuleRequest request) {
-//        log.info("Creating new rule: {}", request.getRuleKey());
         BusinessRuleDto created = ruleService.createRule(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PostMapping(value = "/drl", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(
+            summary = "Import rules from DRL file",
+            description = "Upload a .drl file containing Drools rules"
+    )
+    @ApiResponse(responseCode = "200", description = "Rules imported successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid file format or content")
+    public ResponseEntity<List<BusinessRuleDto>> importFromDRL(
+            @RequestParam("file") @NotNull MultipartFile file) {
+
+        List<BusinessRuleDto> validation = ruleService.createRule(file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(validation);
     }
     
     @PutMapping("/{id}")

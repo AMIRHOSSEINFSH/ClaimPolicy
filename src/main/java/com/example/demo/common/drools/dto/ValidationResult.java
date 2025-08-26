@@ -9,12 +9,10 @@ public class ValidationResult {
     private boolean valid;
     private List<ValidationError> errors;
     private List<ValidationWarning> warnings;
-    private Map<String, Object> metadata;
 
     public ValidationResult() {
         errors = new ArrayList<ValidationError>();
         warnings = new ArrayList<>();
-        metadata = new HashMap<String, Object>();
     }
 
     public boolean isValid() {
@@ -41,11 +39,4 @@ public class ValidationResult {
         this.warnings = warnings;
     }
 
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
-    }
 }

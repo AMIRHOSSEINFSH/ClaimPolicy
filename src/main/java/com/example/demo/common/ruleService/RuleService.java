@@ -1,8 +1,11 @@
 package com.example.demo.common.ruleService;
 
-import com.example.demo.common.enums.Const;
+import com.example.demo.common.drools.dto.RuleTaskHeaderModel;
 import com.example.demo.common.exceptions.RuleExecutionTypeNotDefinedException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -10,17 +13,27 @@ import java.util.Map;
 @Service
 public class RuleService {
 
+
     protected Map<String,String> getAllHeaders(ActivatedJob job) {
         return job.getCustomHeaders();
     }
 
-    protected Const.RuleExecutionType getRuleExecutionType(ActivatedJob job) throws RuleExecutionTypeNotDefinedException {
-        String ruleType = getAllHeaders(job).getOrDefault("rule_exectuation_type",null);
-        Const.RuleExecutionType ruleExecutionType = Const.RuleExecutionType.fromStringOrNull(ruleType);
-        if (ruleType == null || ruleExecutionType == null) {
+    protected RuleTaskHeaderModel getRuleExecutionType(ActivatedJob job) throws RuleExecutionTypeNotDefinedException {
+        String ruleType = getAllHeaders(job).getOrDefault("rule_header",null);
+        var jsonMapper = JsonMapper.builder()
+                .build();
+        if (ruleType == null)
             throw new RuleExecutionTypeNotDefinedException(String.format("Process Definition error, no such rule type [%s] is defined.", ruleType));
+
+        RuleTaskHeaderModel ruleTaskHeaderModel = null;
+        try {
+            ruleTaskHeaderModel = jsonMapper.readValue(ruleType, RuleTaskHeaderModel.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
-        return ruleExecutionType;
+
+
+        return ruleTaskHeaderModel;
     }
 
 }

@@ -21,7 +21,6 @@ public class RuleCategoryDto {
     private String parentCategoryCode;
     private List<RuleCategoryDto> subCategories;
     private Integer ruleCount;
-    private Map<String, Object> metadata;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -119,14 +118,6 @@ public class RuleCategoryDto {
 
     public void setRuleCount(Integer ruleCount) {
         this.ruleCount = ruleCount;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public LocalDateTime getCreatedAt() {

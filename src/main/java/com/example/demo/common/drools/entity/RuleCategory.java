@@ -73,11 +73,6 @@ public class RuleCategory {
 //    @EqualsAndHashCode.Exclude
     private Set<BusinessRule> rules = new HashSet<>();
     
-    // Metadata
-    @Column(name = "metadata", columnDefinition = "json")
-    @Convert(converter = JsonbConverter.class)
-    private Map<String, Object> metadata = new HashMap<>();
-    
     // Audit fields
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -90,7 +85,7 @@ public class RuleCategory {
     // Helper methods
     public void addRule(BusinessRule rule) {
         this.rules.add(rule);
-        rule.getCategories().add(this);
+//        rule.getCategories().add(this);
     }
     
     public void removeRule(BusinessRule rule) {
@@ -196,14 +191,6 @@ public class RuleCategory {
         this.rules = rules;
     }
 
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -223,7 +210,7 @@ public class RuleCategory {
     public RuleCategory() {
     }
 
-    public RuleCategory(UUID id, String categoryCode, String categoryName, String description, String icon, String color, Integer sortOrder, boolean active, RuleCategory parentCategory, Set<RuleCategory> subCategories, Set<BusinessRule> rules, Map<String, Object> metadata, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public RuleCategory(UUID id, String categoryCode, String categoryName, String description, String icon, String color, Integer sortOrder, boolean active, RuleCategory parentCategory, Set<RuleCategory> subCategories, Set<BusinessRule> rules,LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.categoryCode = categoryCode;
         this.categoryName = categoryName;
@@ -235,7 +222,6 @@ public class RuleCategory {
         this.parentCategory = parentCategory;
         this.subCategories = subCategories;
         this.rules = rules;
-        this.metadata = metadata;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

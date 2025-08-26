@@ -11,7 +11,6 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BusinessRuleDto {
     private UUID id;
-    private String ruleKey;
     private String ruleName;
     private String ruleContent;
     private String description;
@@ -24,7 +23,6 @@ public class BusinessRuleDto {
     private boolean active;
     private Set<String> categoryCodes;
     private Set<String> tags;
-    private Map<String, Object> metadata;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;
@@ -36,14 +34,6 @@ public class BusinessRuleDto {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getRuleKey() {
-        return ruleKey;
-    }
-
-    public void setRuleKey(String ruleKey) {
-        this.ruleKey = ruleKey;
     }
 
     public String getRuleName() {
@@ -140,14 +130,6 @@ public class BusinessRuleDto {
 
     public void setTags(Set<String> tags) {
         this.tags = tags;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public LocalDateTime getCreatedAt() {

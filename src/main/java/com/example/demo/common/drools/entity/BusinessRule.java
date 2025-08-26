@@ -1,6 +1,5 @@
 package com.example.demo.common.drools.entity;
 
-import com.example.demo.common.drools.JsonbConverter;
 import com.example.demo.common.drools.enums.RuleType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -13,12 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-@Table(name = "business_rules", indexes = {
-    @Index(name = "idx_rule_key", columnList = "rule_key", unique = true),
-    @Index(name = "idx_rule_active", columnList = "is_active"),
-    @Index(name = "idx_rule_agenda", columnList = "agenda_group")
-})
-
+@Table(name = "business_rules")
 @EntityListeners(AuditingEntityListener.class)
 public class BusinessRule {
     
@@ -28,10 +22,6 @@ public class BusinessRule {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     
-    @Column(name = "rule_key", unique = true, nullable = false, length = 255)
-    @NotBlank(message = "Rule key is required")
-    private String ruleKey;
-    
     @Column(name = "rule_name", nullable = false, length = 255)
     @NotBlank(message = "Rule name is required")
     private String ruleName;
@@ -39,6 +29,7 @@ public class BusinessRule {
     @Column(name = "rule_content", columnDefinition = "TEXT", nullable = false)
     @NotBlank(message = "Rule content is required")
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     private String ruleContent;
     
     @Column(name = "description", columnDefinition = "TEXT")
@@ -67,11 +58,6 @@ public class BusinessRule {
     @Column(name = "is_active")
     private boolean active = true;
     
-    // Metadata as JSON
-    @Column(name = "metadata", columnDefinition = "json")
-    @Convert(converter = JsonbConverter.class)
-    private Map<String, Object> metadata = new HashMap<>();
-    
     // Tags for quick filtering
     @ElementCollection
     @CollectionTable(name = "rule_tags", joinColumns = @JoinColumn(name = "rule_id"))
@@ -79,10 +65,9 @@ public class BusinessRule {
     private Set<String> tags = new HashSet<>();
     
     // Many-to-Many relationship with categories
-    @ManyToMany(mappedBy = "rules", fetch = FetchType.LAZY)
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-    private Set<RuleCategory> categories = new HashSet<>();
+//    @ManyToMany(mappedBy = "rules", fetch = FetchType.LAZY)
+    @ElementCollection
+    private Set<String> categories = new HashSet<>();
     
     // Audit fields
     @CreatedDate
@@ -101,8 +86,8 @@ public class BusinessRule {
     
     // Helper methods
     public void addCategory(RuleCategory category) {
-        this.categories.add(category);
-        category.getRules().add(this);
+//        this.categories.add(category);
+//        category.getRules().add(this);
     }
     
     public void removeCategory(RuleCategory category) {
@@ -110,20 +95,19 @@ public class BusinessRule {
         category.getRules().remove(this);
     }
     
-    public Set<String> getCategoryKeys() {
-        Set<String> keys = new HashSet<>();
-        for (RuleCategory category : categories) {
-            keys.add(category.getCategoryCode());
-        }
-        return keys;
-    }
+//    public Set<String> getCategoryKeys() {
+//        Set<String> keys = new HashSet<>();
+//        for (RuleCategory category : categories) {
+//            keys.add(category.getCategoryCode());
+//        }
+//        return keys;
+//    }
 
     public BusinessRule() {
     }
 
-    public BusinessRule(UUID id, String ruleKey, String ruleName, String ruleContent, String description, RuleType ruleType, String agendaGroup, String ruleflowGroup, String activationGroup, Integer priority, Integer version, boolean active, Map<String, Object> metadata, Set<String> tags, Set<RuleCategory> categories, LocalDateTime createdAt, LocalDateTime updatedAt, String createdBy, String updatedBy) {
+    public BusinessRule(UUID id, String ruleName, String ruleContent, String description, RuleType ruleType, String agendaGroup, String ruleflowGroup, String activationGroup, Integer priority, Integer version, boolean active, Set<String> tags, Set<String> categories, LocalDateTime createdAt, LocalDateTime updatedAt, String createdBy, String updatedBy) {
         this.id = id;
-        this.ruleKey = ruleKey;
         this.ruleName = ruleName;
         this.ruleContent = ruleContent;
         this.description = description;
@@ -134,7 +118,6 @@ public class BusinessRule {
         this.priority = priority;
         this.version = version;
         this.active = active;
-        this.metadata = metadata;
         this.tags = tags;
         this.categories = categories;
         this.createdAt = createdAt;
@@ -149,14 +132,6 @@ public class BusinessRule {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public @NotBlank(message = "Rule key is required") String getRuleKey() {
-        return ruleKey;
-    }
-
-    public void setRuleKey(@NotBlank(message = "Rule key is required") String ruleKey) {
-        this.ruleKey = ruleKey;
     }
 
     public @NotBlank(message = "Rule name is required") String getRuleName() {
@@ -239,13 +214,6 @@ public class BusinessRule {
         this.active = active;
     }
 
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
-    }
 
     public Set<String> getTags() {
         return tags;
@@ -255,11 +223,11 @@ public class BusinessRule {
         this.tags = tags;
     }
 
-    public Set<RuleCategory> getCategories() {
+    public Set<String> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<RuleCategory> categories) {
+    public void setCategories(Set<String> categories) {
         this.categories = categories;
     }
 

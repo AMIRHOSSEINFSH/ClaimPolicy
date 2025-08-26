@@ -135,7 +135,7 @@ class RuleManagementRepositoryImpl implements RuleManagementRepository {
             throw new EntityNotFoundException("Rule not found: " + sourceRuleId);
         }
         BusinessRule clone = new BusinessRule();
-        clone.setRuleKey(source.getRuleKey());
+//        clone.setRuleKey(source.getRuleKey());
         clone.setRuleName(source.getRuleName() + " (Copy)");
         clone.setRuleType(source.getRuleType());
         clone.setRuleContent(source.getRuleContent());
@@ -143,7 +143,6 @@ class RuleManagementRepositoryImpl implements RuleManagementRepository {
         clone.setAgendaGroup(source.getAgendaGroup());
         clone.setPriority(source.getPriority());
         clone.setActive(false);
-        clone.setMetadata(new HashMap<>(source.getMetadata()));
         clone.setTags(new HashSet<>(source.getTags()));
 
 //
@@ -163,9 +162,9 @@ class RuleManagementRepositoryImpl implements RuleManagementRepository {
         entityManager.persist(clone);
         
         // Copy category associations
-        for (RuleCategory category : source.getCategories()) {
-            clone.addCategory(category);
-        }
+//        for (RuleCategory category : source.getCategories()) {
+//            clone.addCategory(category);
+//        }
         
         return clone;
     }

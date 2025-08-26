@@ -10,7 +10,6 @@ public class UpdateExecutionPlanRequest {
     private String description;
     private PlanType planType;
     private List<UpdatePhaseRequest> phases;
-    private Map<String, Object> metadata;
     private Boolean active;
 
     public String getPlanName() {
@@ -43,14 +42,6 @@ public class UpdateExecutionPlanRequest {
 
     public void setPhases(List<UpdatePhaseRequest> phases) {
         this.phases = phases;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public Boolean getActive() {
