@@ -16,7 +16,6 @@ public class ExecutionPlanDto {
     private PlanType planType;
     private List<ExecutionPhaseDto> phases;
     private boolean active;
-    private Map<String, Object> metadata;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -66,14 +65,6 @@ public class ExecutionPlanDto {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public LocalDateTime getCreatedAt() {

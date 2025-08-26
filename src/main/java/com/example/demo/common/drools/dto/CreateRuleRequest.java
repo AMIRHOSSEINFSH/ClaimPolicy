@@ -3,16 +3,9 @@ package com.example.demo.common.drools.dto;
 import com.example.demo.common.drools.enums.RuleType;
 import jakarta.validation.constraints.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CreateRuleRequest {
-    
-    @NotBlank(message = "Rule key is required")
-    @Pattern(regexp = "^[A-Z][A-Z0-9_-]*$", message = "Rule key must start with uppercase letter and contain only uppercase letters, numbers, underscore and hyphen")
-    private String ruleKey;
     
     @NotBlank(message = "Rule name is required")
     @Size(min = 3, max = 255)
@@ -40,17 +33,8 @@ public class CreateRuleRequest {
     
     private Set<String> tags = new HashSet<>();
     
-    private Map<String, Object> metadata = new HashMap<>();
-    
     private boolean active = true;
-
-    public @NotBlank(message = "Rule key is required") @Pattern(regexp = "^[A-Z][A-Z0-9_-]*$", message = "Rule key must start with uppercase letter and contain only uppercase letters, numbers, underscore and hyphen") String getRuleKey() {
-        return ruleKey;
-    }
-
-    public void setRuleKey(@NotBlank(message = "Rule key is required") @Pattern(regexp = "^[A-Z][A-Z0-9_-]*$", message = "Rule key must start with uppercase letter and contain only uppercase letters, numbers, underscore and hyphen") String ruleKey) {
-        this.ruleKey = ruleKey;
-    }
+    private String rawRule;
 
     public @NotBlank(message = "Rule name is required") @Size(min = 3, max = 255) String getRuleName() {
         return ruleName;
@@ -113,15 +97,21 @@ public class CreateRuleRequest {
     }
 
     public void setPriority(@Min(value = 0, message = "Priority must be non-negative") @Max(value = 1000, message = "Priority must not exceed 1000") Integer priority) {
-        this.priority = priority;
+        this.priority = Objects.requireNonNullElse(priority, 0);
     }
 
-    public @NotEmpty(message = "At least one category is required") Set<String> getCategoryCodes() {
+    public Set<String> getCategoryCodes() {
+        if (categoryCodes == null) return HashSet.newHashSet(0);
         return categoryCodes;
     }
 
     public void setCategoryCodes(@NotEmpty(message = "At least one category is required") Set<String> categoryCodes) {
         this.categoryCodes = categoryCodes;
+    }
+
+    public void addCategory(String categoryCode) {
+        categoryCodes.add(categoryCode);
+        setCategoryCodes(categoryCodes);
     }
 
     public Set<String> getTags() {
@@ -132,19 +122,19 @@ public class CreateRuleRequest {
         this.tags = tags;
     }
 
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
-    }
-
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void setRawRule(String rawRule) {
+        this.rawRule = rawRule;
+    }
+
+    public String getRawRule() {
+        return rawRule;
     }
 }

@@ -28,9 +28,7 @@ public class CreateCategoryRequest {
     private Integer sortOrder = 0;
     
     private UUID parentCategoryId;
-    
-    private Map<String, Object> metadata = new HashMap<>();
-    
+
     private boolean active = true;
 
     public @NotBlank(message = "Category code is required") @Pattern(regexp = "^[A-Z][A-Z0-9_]*$", message = "Category code must be uppercase with underscores") String getCategoryCode() {
@@ -87,14 +85,6 @@ public class CreateCategoryRequest {
 
     public void setParentCategoryId(UUID parentCategoryId) {
         this.parentCategoryId = parentCategoryId;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public boolean isActive() {

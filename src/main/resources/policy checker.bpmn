@@ -10,18 +10,8 @@
       <bpmn:outgoing>Flow_1r567z5</bpmn:outgoing>
       <bpmn:outgoing>Flow_1u7rlud</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1r567z5" sourceRef="Gateway_1epn2rs" targetRef="Activity_0a15rcz" />
+    <bpmn:sequenceFlow id="Flow_1r567z5" sourceRef="Gateway_1epn2rs" targetRef="Activity_14ndofu" />
     <bpmn:sequenceFlow id="Flow_1u7rlud" sourceRef="Gateway_1epn2rs" targetRef="Activity_06wn2vs" />
-    <bpmn:serviceTask id="Activity_0a15rcz" name="check rules for ClaimDto">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="&#34;dto_rules_&#34; + processPrefix" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="rule_exectuation_type" value="OBJ_TYPE" />
-        </zeebe:taskHeaders>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1r567z5</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nef8ld</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:scriptTask id="Activity_06wn2vs" name="تخفیف مناسبت اربعین">
       <bpmn:extensionElements>
         <zeebe:script expression="=if (claimDto.accidentType = &#34;FIRE&#34; and date(claimDto.accidentDate) &#62; date(&#34;2025-08-18&#34;)) &#10;then true &#10;else false" resultVariable="arbaeenDiscount" />
@@ -30,11 +20,10 @@
       <bpmn:outgoing>Flow_1w8si16</bpmn:outgoing>
     </bpmn:scriptTask>
     <bpmn:exclusiveGateway id="Gateway_0r3ae6k">
-      <bpmn:incoming>Flow_0nef8ld</bpmn:incoming>
       <bpmn:incoming>Flow_1w8si16</bpmn:incoming>
+      <bpmn:incoming>Flow_1o4r3qt</bpmn:incoming>
       <bpmn:outgoing>Flow_0urvxme</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0nef8ld" sourceRef="Activity_0a15rcz" targetRef="Gateway_0r3ae6k" />
     <bpmn:sequenceFlow id="Flow_1w8si16" sourceRef="Activity_06wn2vs" targetRef="Gateway_0r3ae6k" />
     <bpmn:sequenceFlow id="Flow_0urvxme" sourceRef="Gateway_0r3ae6k" targetRef="Activity_1pmvru8" />
     <bpmn:serviceTask id="Activity_1pmvru8" name="دریافت بیمه نامه">
@@ -60,45 +49,71 @@
       <bpmn:outgoing>Flow_17pn5zy</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_10itkz0" sourceRef="Activity_026gjxd" targetRef="Gateway_1wg1fa1" />
-    <bpmn:sequenceFlow id="Flow_158eh72" name="خودرو درخواستی با خودرو تعریف شده در بیمه نامه یکسان نباشد" sourceRef="Gateway_1wg1fa1" targetRef="Event_15x4xqu">
+    <bpmn:sequenceFlow id="Flow_158eh72" name="خودرو درخواستی با خودرو تعریف شده در بیمه نامه یکسان نباشد" sourceRef="Gateway_1wg1fa1" targetRef="Activity_17yseer">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=claimDto.policy.vehicleId = claimDto.vehicle.id</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1l74jr8" name="بیمه نامه غیر فعال باشد" sourceRef="Gateway_1wg1fa1" targetRef="Event_06mt2p0">
+    <bpmn:sequenceFlow id="Flow_1l74jr8" name="بیمه نامه غیر فعال باشد" sourceRef="Gateway_1wg1fa1" targetRef="Activity_18d04fc">
+      <bpmn:extensionElements />
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=claimDto.policy.enabled = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0rh5knd" name="بیمه نامه منقضی شده باشد" sourceRef="Gateway_1wg1fa1" targetRef="Event_0ximedk">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=date(claimDto.accidentTime) &lt; date(claimDto.policy.expireDate)</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_0rh5knd" name="بیمه نامه منقضی شده باشد" sourceRef="Gateway_1wg1fa1" targetRef="Activity_109iohq">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=date(from: date and time(claimDto.accidentDate)) 
+  &gt; date(from: date and time(claimDto.policy.expiryDate))</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:endEvent id="Event_15x4xqu">
-      <bpmn:incoming>Flow_158eh72</bpmn:incoming>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0chvpzp" errorRef="Error_18kx3hj" />
+    <bpmn:endEvent id="Event_0biq1dx">
+      <bpmn:incoming>Flow_17pn5zy</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:endEvent id="Event_06mt2p0">
-      <bpmn:incoming>Flow_1l74jr8</bpmn:incoming>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0cl1fwn" errorRef="Error_18kx3hj" />
-    </bpmn:endEvent>
-    <bpmn:endEvent id="Event_0ximedk">
-      <bpmn:incoming>Flow_0rh5knd</bpmn:incoming>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0nfqsbc" errorRef="Error_18kx3hj" />
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_0znrpxg" name="check rules for ClaimEntity">
+    <bpmn:sequenceFlow id="Flow_17pn5zy" sourceRef="Gateway_1wg1fa1" targetRef="Event_0biq1dx" />
+    <bpmn:serviceTask id="Activity_14ndofu" name="بررسی تخفیفات مربوط به ماه های خاص">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="&#34;entity_rules_&#34;+ processPrefix" />
+        <zeebe:taskDefinition type="=&#34;dto_rules_&#34; + processSuffix + &#34;_month&#34;" />
         <zeebe:taskHeaders>
-          <zeebe:header key="rule_exectuation_type" value="OBJ_TYPE" />
+          <zeebe:header key="rule_header" value="{&#10; &#34;names&#34;: [&#10;&#34;Discount for Nowruz (Persian New Year)&#34;, &#10;&#34;Discount for National Day&#34;,&#10; &#34;Discount for Summer Month&#34;&#10;],&#10; &#34;executionType&#34;: &#34;EACH_RULE&#34; &#10;}" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17pn5zy</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ks29kv</bpmn:outgoing>
+      <bpmn:incoming>Flow_1r567z5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1o4r3qt</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_0biq1dx">
-      <bpmn:incoming>Flow_1ks29kv</bpmn:incoming>
+    <bpmn:sequenceFlow id="Flow_1o4r3qt" sourceRef="Activity_14ndofu" targetRef="Gateway_0r3ae6k" />
+    <bpmn:sequenceFlow id="Flow_1dry3yv" sourceRef="Activity_17yseer" targetRef="Event_15x4xqu" />
+    <bpmn:scriptTask id="Activity_17yseer" name="خطا عدم انطباق خودرو مذکور با خودرو بیمه نامه">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=append(error_list, &#34;ERR_1001_5&#34;)" resultVariable="error_list" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_158eh72</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dry3yv</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Activity_18d04fc" name="خطا غیرفعال بودن بیمه نامه">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=append(error_list, &#34;ERR_1001_6&#34;)" resultVariable="error_list" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1l74jr8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0034udq</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0034udq" sourceRef="Activity_18d04fc" targetRef="Event_06mt2p0" />
+    <bpmn:scriptTask id="Activity_109iohq" name="خطا انقضا بیمه نامه">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=append(error_list, &#34;ERR_1001_7&#34;)" resultVariable="error_list" />
+        <zeebe:ioMapping>
+          <zeebe:output source="=error_list" target="error_list" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rh5knd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tuvdb0</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1tuvdb0" sourceRef="Activity_109iohq" targetRef="Event_0ximedk" />
+    <bpmn:endEvent id="Event_0ximedk">
+      <bpmn:incoming>Flow_1tuvdb0</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1ks29kv" sourceRef="Activity_0znrpxg" targetRef="Event_0biq1dx" />
-    <bpmn:sequenceFlow id="Flow_17pn5zy" sourceRef="Gateway_1wg1fa1" targetRef="Activity_0znrpxg" />
+    <bpmn:endEvent id="Event_06mt2p0">
+      <bpmn:incoming>Flow_0034udq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_15x4xqu">
+      <bpmn:incoming>Flow_1dry3yv</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:signal id="Signal_0s6fhf9" name="claimD" />
-  <bpmn:error id="Error_18kx3hj" name="error_list" errorCode="append(error_list, &#34;ERR_1001_5&#34;)" />
+  <bpmn:error id="Error_18kx3hj" name="ERR" errorCode="ERR" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_09917ac">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
@@ -107,12 +122,8 @@
       <bpmndi:BPMNShape id="Gateway_09cjh2o_di" bpmnElement="Gateway_1epn2rs">
         <dc:Bounds x="245" y="275" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_161skgx_di" bpmnElement="Activity_0a15rcz">
-        <dc:Bounds x="390" y="150" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0whk49t_di" bpmnElement="Activity_06wn2vs">
-        <dc:Bounds x="390" y="380" width="100" height="80" />
+        <dc:Bounds x="350" y="380" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0r3ae6k_di" bpmnElement="Gateway_0r3ae6k" isMarkerVisible="true">
@@ -128,21 +139,33 @@
       <bpmndi:BPMNShape id="Gateway_1wg1fa1_di" bpmnElement="Gateway_1wg1fa1" isMarkerVisible="true">
         <dc:Bounds x="995" y="275" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1iijd15_di" bpmnElement="Event_15x4xqu">
-        <dc:Bounds x="1142" y="92" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0biq1dx_di" bpmnElement="Event_0biq1dx">
+        <dc:Bounds x="1412" y="422" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0a2vg43_di" bpmnElement="Event_06mt2p0">
-        <dc:Bounds x="1142" y="172" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1dncjf0_di" bpmnElement="Event_0ximedk">
-        <dc:Bounds x="1142" y="282" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1k80c85_di" bpmnElement="Activity_0znrpxg">
-        <dc:Bounds x="1100" y="400" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1ub9xha_di" bpmnElement="Activity_14ndofu">
+        <dc:Bounds x="350" y="150" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0biq1dx_di" bpmnElement="Event_0biq1dx">
-        <dc:Bounds x="1282" y="422" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_1egu4gt_di" bpmnElement="Activity_17yseer">
+        <dc:Bounds x="1190" y="50" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1dnsw6s" bpmnElement="Activity_18d04fc">
+        <dc:Bounds x="1190" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1pxpcnx" bpmnElement="Activity_109iohq">
+        <dc:Bounds x="1190" y="260" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1kckkr7_di" bpmnElement="Event_0ximedk">
+        <dc:Bounds x="1412" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0k6bc4w_di" bpmnElement="Event_06mt2p0">
+        <dc:Bounds x="1412" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yas9ht_di" bpmnElement="Event_15x4xqu">
+        <dc:Bounds x="1412" y="72" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1vi1q7p_di" bpmnElement="Flow_1vi1q7p">
         <di:waypoint x="188" y="300" />
@@ -151,20 +174,15 @@
       <bpmndi:BPMNEdge id="Flow_1r567z5_di" bpmnElement="Flow_1r567z5">
         <di:waypoint x="270" y="275" />
         <di:waypoint x="270" y="190" />
-        <di:waypoint x="390" y="190" />
+        <di:waypoint x="350" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u7rlud_di" bpmnElement="Flow_1u7rlud">
         <di:waypoint x="270" y="325" />
         <di:waypoint x="270" y="420" />
-        <di:waypoint x="390" y="420" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nef8ld_di" bpmnElement="Flow_0nef8ld">
-        <di:waypoint x="490" y="190" />
-        <di:waypoint x="610" y="190" />
-        <di:waypoint x="610" y="275" />
+        <di:waypoint x="350" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1w8si16_di" bpmnElement="Flow_1w8si16">
-        <di:waypoint x="490" y="420" />
+        <di:waypoint x="450" y="420" />
         <di:waypoint x="610" y="420" />
         <di:waypoint x="610" y="325" />
       </bpmndi:BPMNEdge>
@@ -182,35 +200,48 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_158eh72_di" bpmnElement="Flow_158eh72">
         <di:waypoint x="1020" y="275" />
-        <di:waypoint x="1020" y="110" />
-        <di:waypoint x="1142" y="110" />
+        <di:waypoint x="1020" y="90" />
+        <di:waypoint x="1190" y="90" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1049" y="60" width="81" height="40" />
+          <dc:Bounds x="1042" y="40" width="81" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1l74jr8_di" bpmnElement="Flow_1l74jr8">
         <di:waypoint x="1020" y="275" />
         <di:waypoint x="1020" y="190" />
-        <di:waypoint x="1142" y="190" />
+        <di:waypoint x="1190" y="190" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1047" y="163" width="85" height="14" />
+          <dc:Bounds x="1055" y="163" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rh5knd_di" bpmnElement="Flow_0rh5knd">
         <di:waypoint x="1045" y="300" />
-        <di:waypoint x="1142" y="300" />
+        <di:waypoint x="1190" y="300" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1052" y="271" width="76" height="27" />
+          <dc:Bounds x="1073" y="271" width="76" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17pn5zy_di" bpmnElement="Flow_17pn5zy">
         <di:waypoint x="1020" y="325" />
         <di:waypoint x="1020" y="440" />
-        <di:waypoint x="1100" y="440" />
+        <di:waypoint x="1412" y="440" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ks29kv_di" bpmnElement="Flow_1ks29kv">
-        <di:waypoint x="1200" y="440" />
-        <di:waypoint x="1282" y="440" />
+      <bpmndi:BPMNEdge id="Flow_1o4r3qt_di" bpmnElement="Flow_1o4r3qt">
+        <di:waypoint x="450" y="190" />
+        <di:waypoint x="610" y="190" />
+        <di:waypoint x="610" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dry3yv_di" bpmnElement="Flow_1dry3yv">
+        <di:waypoint x="1290" y="90" />
+        <di:waypoint x="1412" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0034udq_di" bpmnElement="Flow_0034udq">
+        <di:waypoint x="1290" y="190" />
+        <di:waypoint x="1412" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tuvdb0_di" bpmnElement="Flow_1tuvdb0">
+        <di:waypoint x="1290" y="300" />
+        <di:waypoint x="1412" y="300" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

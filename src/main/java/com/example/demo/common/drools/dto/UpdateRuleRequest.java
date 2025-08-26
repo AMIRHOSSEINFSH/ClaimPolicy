@@ -33,8 +33,7 @@ public class UpdateRuleRequest {
     
     private Set<String> tags;
     
-    private Map<String, Object> metadata;
-    
+
     private Boolean active;
 
     public @Size(min = 3, max = 255) String getRuleName() {
@@ -115,14 +114,6 @@ public class UpdateRuleRequest {
 
     public void setTags(Set<String> tags) {
         this.tags = tags;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public Boolean getActive() {

@@ -17,10 +17,10 @@ public class ClaimDto {
     private String damageDescription;
     private UUID vehicleId;
 
-    @JsonIgnore
+
     private VehicleEntity vehicle;
 
-    @JsonIgnore
+
     private PolicyEntity policy;
 
     public UUID getPolicyId() {
@@ -69,6 +69,22 @@ public class ClaimDto {
 
     public void setVehicleId(UUID vehicleId) {
         this.vehicleId = vehicleId;
+    }
+
+    public VehicleEntity getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(VehicleEntity vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public PolicyEntity getPolicy() {
+        return policy;
+    }
+
+    public void setPolicy(PolicyEntity policy) {
+        this.policy = policy;
     }
 }
 

@@ -44,7 +44,7 @@ public class RuleExecutionService {
         
         try {
             // Load rules for categories
-            List<BusinessRule> rules = ruleRepository.findActiveRulesByCategoriesIn(request.getCategories());
+            List<BusinessRule> rules = List.of();//ruleRepository.findActiveRulesByCategoriesIn(request.getCategories());
             
             if (rules.isEmpty()) {
 //                log.warn("No active rules found for categories: {}", request.getCategories());
@@ -126,7 +126,7 @@ public class RuleExecutionService {
             
             // Add rules to file system
             for (BusinessRule rule : rules) {
-                String path = String.format("src/main/resources/rules/%s.drl", rule.getRuleKey());
+                String path = String.format("src/main/resources/rules/%s.drl", rule.getRuleName());
                 kfs.write(path, rule.getRuleContent());
             }
             

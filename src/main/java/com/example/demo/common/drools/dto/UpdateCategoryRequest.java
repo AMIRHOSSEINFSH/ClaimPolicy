@@ -10,7 +10,6 @@ public class UpdateCategoryRequest {
     private String color;
     private Integer sortOrder;
     private UUID parentCategoryId;
-    private Map<String, Object> metadata;
     private Boolean active;
 
     public String getCategoryName() {
@@ -59,14 +58,6 @@ public class UpdateCategoryRequest {
 
     public void setParentCategoryId(UUID parentCategoryId) {
         this.parentCategoryId = parentCategoryId;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 
     public Boolean getActive() {

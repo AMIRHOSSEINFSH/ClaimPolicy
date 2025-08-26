@@ -1,5 +1,6 @@
 package com.example.demo.common.ruleService;
 
+import com.example.demo.common.drools.entity.BusinessRule;
 import com.example.demo.common.model.Rule;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
@@ -27,7 +28,7 @@ public class DroolsService {
         this.ruleService = ruleService;
     }
 
-    public KieContainer createTempContainer(List<Rule> rules, String entityName) {
+    public KieContainer createTempContainer(List<BusinessRule> rules, String entityName) {
 
         String KMODULE_XML = String.format("""
                 <?xml version="1.0" encoding="UTF-8"?>
@@ -44,7 +45,7 @@ public class DroolsService {
         String newVersion = VERSION_COUNTER.getAndIncrement() + ".0-SNAPSHOT";
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, newVersion);
         kfs.generateAndWritePomXML(releaseId); // Generate a pom.xml for the in-memory kjar
-        for (Rule r : rules) {
+        for (BusinessRule r : rules) {
             log.info("Rule '{}'", r.getRuleContent());
             String sb = "src/main/resources/rules/" + r.getRuleName() + ".drl";
             kfs.write(sb, ks.getResources().newReaderResource(new StringReader(r.getRuleContent()))
