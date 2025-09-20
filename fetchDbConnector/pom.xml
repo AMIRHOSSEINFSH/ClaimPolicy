@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.example</groupId>
+    <artifactId>camundaProject</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+    <groupId>org.riton</groupId>
+    <artifactId>fetchDbConnector</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>fetchDbConnector</name>
+    <description>fetchDbConnector</description>
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <version.connectors>8.7.8</version.connectors>
+        <java.version>21</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.riton</groupId>
+            <artifactId>shared-library</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.camunda.connector</groupId>
+            <artifactId>spring-boot-starter-camunda-connectors</artifactId>
+            <version>${version.connectors}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.camunda.connector</groupId>
+            <artifactId>connector-core</artifactId>
+            <version>${version.connectors}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Element template generator annotations (compile-time only) -->
+        <dependency>
+            <groupId>io.camunda.connector</groupId>
+            <artifactId>element-template-generator-core</artifactId>
+            <version>${version.connectors}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.camunda.connector</groupId>
+                <artifactId>element-template-generator-maven-plugin</artifactId>
+                <version>${version.connectors}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>generate-templates</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <connectors>
+                        <connector>
+                            <connectorClass>org.riton.fetchdbconnector.connector.MyConnectorFunction</connectorClass>
+                            <files>
+                                <file>
+                                    <templateId>dbFetch.v1</templateId>
+                                    <templateFileName>template-connector.json</templateFileName>
+                                </file>
+                            </files>
+                        </connector>
+                    </connectors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>connectors</id>
+            <name>Connectors Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors/</url>
+        </repository>
+
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>connectors-snapshots</id>
+            <name>Connectors Snapshot Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors-snapshots/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>connectors</id>
+            <name>Connectors Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors/</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>connectors-snapshots</id>
+            <name>Connectors Snapshot Repository</name>
+            <url>https://artifacts.camunda.com/artifactory/connectors-snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>
