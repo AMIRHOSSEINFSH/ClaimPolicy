@@ -1,0 +1,16 @@
+package rules;
+
+import com.example.client_zeebe.dto.ClaimDto;
+import java.time.LocalDate;
+
+rule "Discount for Summer Month"
+@Category(DIS_COUNT)
+agenda-group "DIS_COUNT"
+when
+    $claim : ClaimDto(
+        accidentDate != null,
+        (accidentDate.getMonthValue() == 6 || accidentDate.getMonthValue() == 7 || accidentDate.getMonthValue() == 8)
+    )
+then
+    System.out.println("Summer discount applied");
+end
